@@ -5,11 +5,12 @@
   "main": "server/server.js",
   "type": "module",
   "scripts": {
-    "start": "cmd /c \"cd client && npm run build\" && node server/server.js",
+    "start": "node server/server.js",
     "server": "node server/server.js",
     "seed": "node server/seed.js",
-    "client": "cmd /c \"cd client && npm run dev\"",
-    "build": "cmd /c \"cd client && npm run build\""
+    "client": "npm --prefix client run dev",
+    "build": "npm --prefix client install && npm --prefix client run build",
+    "vercel-build": "npm --prefix client install && npm --prefix client run build"
   },
   "dependencies": {
     "cors": "^2.8.5",

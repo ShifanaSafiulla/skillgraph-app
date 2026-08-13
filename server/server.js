@@ -84,23 +84,31 @@ app.get('*', (req, res) => {
   }
 });
 
-// Start Node.js Server with Port Fallback Listener
-const startServer = (portToTry) => {
-  const server = app.listen(portToTry, async () => {
-    console.log(`\n======================================================`);
-    console.log(`🚀 SkillGraph Node.js App running at http://localhost:${portToTry}`);
-    console.log(`======================================================\n`);
-    await connectDB();
-  });
+// Start Node.js Server (Only in traditional standalone server mode)
+if (!process.env.VERCEL) {
+  const startServer = (portToTry) => {
+    const server = app.listen(portToTry, async () => {
+      console.log(`\n======================================================`);
+      console.log(`🚀 SkillGraph Node.js App running at http://localhost:${portToTry}`);
+      console.log(`======================================================\n`);
+      await connectDB();
+    });
 
-  server.on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-      console.warn(`⚠️ Port ${portToTry} is in use. Trying port ${portToTry + 1}...`);
-      startServer(portToTry + 1);
-    } else {
-      console.error('Server error:', err);
-    }
-  });
-};
+    server.on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.warn(`⚠️ Port ${portToTry} is in use. Trying port ${portToTry + 1}...`);
+        startServer(portToTry + 1);
+      } else {
+        console.error('Server error:', err);
+      }
+    });
+  };
 
-startServer(PORT);
+  startServer(PORT);
+} else {
+  // Connect to DB immediately on Vercel Serverless invocation
+  connectDB();
+}
+
+export default app;
+
