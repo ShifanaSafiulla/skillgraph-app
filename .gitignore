@@ -7,7 +7,12 @@ server/node_modules/
 client/dist/
 server/public/assets/
 
-# Environment variables & Local Files
+# Environment variables (NEVER commit these!)
 .env
+.env.local
+.env.production
+server/.env
+
+# Misc
 *.log
 .DS_Store
